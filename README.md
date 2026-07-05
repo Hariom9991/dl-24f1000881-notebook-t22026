@@ -6,7 +6,7 @@ This project presents a complete machine learning pipeline for solving multiple-
 
 1. **TF-IDF + Logistic Regression**
 2. **BiGRU + Attention Scratch Model (PyTorch)**
-3. **DistilBERT Multiple Choice Transformer**
+3. **RoBERTa_base Multiple Choice Transformer**
 
 A retrieval-augmented preprocessing step is used to provide additional context for each question before training.
 
