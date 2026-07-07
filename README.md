@@ -1,14 +1,14 @@
 # Smart MCQ Solver Challenge
-I need to add few morethings to this i have to update it at the end 
+
 ## Overview
 
 This project presents a complete machine learning pipeline for solving multiple-choice question (MCQ) answering tasks. Three different approaches are implemented and compared:
 
 1. **TF-IDF + Logistic Regression**
 2. **BiGRU + Attention Scratch Model (PyTorch)**
-3. **RoBERTa_base Multiple Choice Transformer**
+3. **ELECTRA-base Multiple Choice Transformer**
 
-A retrieval-augmented preprocessing step is used to provide additional context for each question before training.
+A retrieval-augmented preprocessing step using **TF-IDF Retrieval** and **Cosine Similarity** is used to provide additional context for each question before training.
 
 The best-performing model is automatically selected based on **Validation MAP@3**, retrained on the complete training dataset, and used to generate the final competition submission.
 
@@ -43,7 +43,17 @@ Each question contains:
 
 ---
 
-## 2. Text Preprocessing
+## 2. Exploratory Data Analysis (EDA)
+
+- Analyze dataset statistics
+- Visualize answer distribution
+- Analyze text length
+- Check duplicate questions
+- Perform retrieval quality analysis
+
+---
+
+## 3. Text Preprocessing
 
 - Convert text to lowercase
 - Remove extra whitespace
@@ -51,9 +61,9 @@ Each question contains:
 
 ---
 
-## 3. Retrieval Augmentation
+## 4. Retrieval Augmentation
 
-A TF-IDF retriever finds the most similar training question.
+A TF-IDF retriever finds the most similar training question using **Cosine Similarity**.
 
 Retrieved information includes:
 
@@ -64,7 +74,7 @@ The retrieved context is appended to every question before model training.
 
 ---
 
-## 4. Long Format Conversion
+## 5. Long Format Conversion
 
 Each MCQ is converted into five training samples.
 
@@ -131,26 +141,27 @@ The attention mechanism enables the model to focus on the most informative words
 | F1 Score | **0.9330** |
 | MAP@3 | **0.9963** |
 
-This model achieved the **highest validation MAP@3** and was selected as the final model for inference.
+This model achieved the highest validation MAP@3 and was selected as the final model for inference.
 
 ---
 
-## Model 3 — DistilBERT Multiple Choice Transformer
+## Model 3 — ELECTRA-base Multiple Choice Transformer
 
 Pretrained transformer using:
 
-- `distilbert-base-uncased`
+- `google/electra-base-discriminator`
 - Hugging Face Transformers
+- AutoTokenizer
 - AutoModelForMultipleChoice
 
 ### Validation Results
 
 | Metric | Score |
 |---------|-------|
-| Validation Loss | **0.5580** |
-| Accuracy | **0.8725** |
-| F1 Score | **0.8718** |
-| MAP@3 | **0.9183** |
+| Validation Loss | **Replace with your score** |
+| Accuracy | **Replace with your score** |
+| F1 Score | **Replace with your score** |
+| MAP@3 | **Replace with your score** |
 
 ---
 
@@ -160,9 +171,9 @@ Pretrained transformer using:
 |------|----------------:|---------:|---------:|------:|
 | **BiGRU + Attention Scratch Model** | **0.0529** | **0.9745** | **0.9330** | **0.9963** |
 | TF-IDF + Logistic Regression | 0.4617 | 0.9365 | 0.8581 | 0.9692 |
-| DistilBERT Multiple Choice Transformer | 0.5580 | 0.8725 | 0.8718 | 0.9183 |
+| ELECTRA-base Multiple Choice Transformer | **Replace** | **Replace** | **Replace** | **Replace** |
 
-The **BiGRU + Attention Scratch Model** achieved the highest validation MAP@3 and was selected as the final model for generating competition predictions.
+The model with the highest **Validation MAP@3** is automatically selected for generating the final competition predictions.
 
 ---
 
@@ -177,7 +188,12 @@ Evaluation metrics include:
 - Validation F1 Score
 - Validation MAP@3
 
-Weights & Biases (W&B) is used for experiment tracking and visualization.
+Additional features include:
+
+- Weights & Biases (W&B) experiment tracking
+- Automatic best model checkpoint selection
+- Error Analysis
+- Model Saving
 
 ---
 
@@ -211,6 +227,9 @@ Example:
 - PyTorch
 - Hugging Face Transformers
 - Matplotlib
+- Seaborn
+- Graphviz
+- Joblib
 - Weights & Biases (W&B)
 
 ---
@@ -218,7 +237,13 @@ Example:
 # Installation
 
 ```bash
-pip install numpy pandas matplotlib scikit-learn tqdm torch torchvision transformers datasets accelerate sentencepiece wandb
+pip install -r requirements.txt
+```
+
+or
+
+```bash
+pip install numpy pandas matplotlib seaborn scikit-learn scipy tqdm torch torchvision transformers datasets accelerate sentencepiece wandb joblib graphviz
 ```
 
 ---
@@ -231,10 +256,13 @@ pip install numpy pandas matplotlib scikit-learn tqdm torch torchvision transfor
 4. The notebook will:
 
 - preprocess the data
+- perform exploratory data analysis
 - retrieve contextual information
 - train all three models
 - compare model performance
 - automatically select the best model
+- perform error analysis
+- save trained models
 - generate `submission.csv`
 
 ---
@@ -243,14 +271,16 @@ pip install numpy pandas matplotlib scikit-learn tqdm torch torchvision transfor
 
 - Cross-validation
 - BM25 retrieval
+- Dense Retrieval
 - Sentence Transformer retrieval
-- RoBERTa / DeBERTa models
+- Larger Transformer Models (RoBERTa-large, DeBERTa-v3)
 - Model ensembling
 - Knowledge distillation
 - Hard negative mining
+- Hyperparameter optimization
 
 ---
 
 # Author
 
-Developed as a solution for the **Smart MCQ Solver Challenge**, demonstrating classical machine learning, deep learning from scratch using **BiGRU with Attention**, and transformer-based approaches for multiple-choice question answering.
+Developed as a solution for the **Smart MCQ Solver Challenge**, demonstrating classical machine learning, deep learning from scratch using **BiGRU with Attention**, retrieval-augmented learning, and transformer-based multiple-choice question answering using **ELECTRA-base**.
