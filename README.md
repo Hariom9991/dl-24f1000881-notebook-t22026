@@ -1,286 +1,149 @@
-# Smart MCQ Solver Challenge
+#  Smart MCQ Solver Challenge
 
-## Overview
-
-This project presents a complete machine learning pipeline for solving multiple-choice question (MCQ) answering tasks. Three different approaches are implemented and compared:
-
-1. **TF-IDF + Logistic Regression**
-2. **BiGRU + Attention Scratch Model (PyTorch)**
-3. **ELECTRA-base Multiple Choice Transformer**
-
-A retrieval-augmented preprocessing step using **TF-IDF Retrieval** and **Cosine Similarity** is used to provide additional context for each question before training.
-
-The best-performing model is automatically selected based on **Validation MAP@3**, retrained on the complete training dataset, and used to generate the final competition submission.
+An end-to-end Deep Learning project for the **Smart MCQ Solver Kaggle Competition**. This project predicts the **Top-3 most probable answers** for multiple-choice questions using Machine Learning, Deep Learning, and Transformer-based approaches, evaluated with the official **MAP@3** metric.
 
 ---
 
-# Dataset
+##  Kaggle Performance
 
-The project uses the **Smart MCQ Solver Challenge** dataset.
+- **Competition:** Smart MCQ Solver Challenge
+- **Evaluation Metric:** MAP@3
+- **Public Kaggle Score:** **0.753**
 
-### Files
+---
 
-- `train.csv`
-- `test.csv`
-- `sample_submission.csv`
+##  Dataset
+
+| Dataset | Samples |
+|----------|---------|
+| Training | 2,000 |
+| Testing | 500 |
 
 Each question contains:
-
-- Question prompt
-- Five answer choices (A–E)
-- Correct answer label (training only)
-
----
-
-# Project Pipeline
-
-## 1. Data Loading
-
-- Load training and test datasets
-- Check missing values
-- Analyze answer distribution
-- Explore prompt and option lengths
+- Question Prompt
+- Five Answer Options (A–E)
+- Correct Answer (Training only)
 
 ---
 
-## 2. Exploratory Data Analysis (EDA)
+##  Exploratory Data Analysis
 
-- Analyze dataset statistics
-- Visualize answer distribution
-- Analyze text length
-- Check duplicate questions
-- Perform retrieval quality analysis
-
----
-
-## 3. Text Preprocessing
-
-- Convert text to lowercase
-- Remove extra whitespace
-- Normalize text formatting
+The notebook performs:
+- Dataset overview
+- Missing value analysis
+- Question length analysis
+- Answer distribution analysis
+- Option length comparison
+- Duplicate prompt detection and removal
+- Class balance analysis
 
 ---
 
-## 4. Retrieval Augmentation
+##  Data Preprocessing
 
-A TF-IDF retriever finds the most similar training question using **Cosine Similarity**.
-
-Retrieved information includes:
-
-- Similar question
-- Its correct answer
-
-The retrieved context is appended to every question before model training.
-
----
-
-## 5. Long Format Conversion
-
-Each MCQ is converted into five training samples.
-
-Example:
-
-Question + Retrieved Context + Option A
-
-Question + Retrieved Context + Option B
-
-...
-
-Question + Retrieved Context + Option E
-
-Positive label = Correct option
-
-Negative label = Incorrect option
+- Text cleaning (lowercase, special character removal, URL removal)
+- Duplicate prompt removal
+- Long-format dataset creation
+- TF-IDF feature extraction
+- ELECTRA tokenization
+- Train-validation split
+- Class weight computation
 
 ---
 
-# Models
+##  Models Implemented
 
-## Model 1 — TF-IDF + Logistic Regression
+### 1. TF-IDF + Logistic Regression (Baseline)
+Traditional machine learning baseline using TF-IDF features and Logistic Regression.
 
-### Features
-
-- TF-IDF (1–2 grams)
-- 30,000 maximum features
-- Logistic Regression
-- Balanced class weights
-
-### Validation Results
-
-| Metric | Score |
-|---------|-------|
-| Validation Loss | **0.4617** |
-| Accuracy | **0.9365** |
-| F1 Score | **0.8581** |
-| MAP@3 | **0.9692** |
-
----
-
-## Model 2 — BiGRU + Attention Scratch Model
-
-Implemented completely from scratch using **PyTorch**.
-
-### Architecture
-
+### 2. BiGRU + Attention (Scratch)
+A custom PyTorch model built from scratch using:
 - Embedding Layer
 - Bidirectional GRU
 - Attention Layer
-- Dropout
-- Fully Connected Layer
-- ReLU Activation
-- Output Layer
+- Dense Network
 
-The attention mechanism enables the model to focus on the most informative words in each question-option pair before making the final prediction.
+### 3. ELECTRA-base (Pretrained)
+Fine-tuned **Google ELECTRA-base** using Hugging Face Transformers for multiple-choice question answering.
 
-### Validation Results
-
-| Metric | Score |
-|---------|-------|
-| Validation Loss | **0.0529** |
-| Accuracy | **0.9745** |
-| F1 Score | **0.9330** |
-| MAP@3 | **0.9963** |
-
-This model achieved the highest validation MAP@3 and was selected as the final model for inference.
+### 4. TF-IDF + PyTorch MLP
+A custom neural network trained on TF-IDF features.
 
 ---
 
-## Model 3 — ELECTRA-base Multiple Choice Transformer
+##  Model Performance
 
-Pretrained transformer using:
+| Model | Accuracy | F1 Macro | MAP@3 |
+|--------|----------:|----------:|-------:|
+| TF-IDF + Logistic Regression | 0.8369 | 0.6096 | 0.9692 |
+| TF-IDF + PyTorch MLP | 0.9744 | 0.9594 | 0.9735 |
+| BiGRU + Attention | 0.9699 | 0.9259 | 0.9915 |
+| ELECTRA-base | **0.9943** | **0.9943** | **0.9972** |
 
-- `google/electra-base-discriminator`
-- Hugging Face Transformers
-- AutoTokenizer
-- AutoModelForMultipleChoice
-
-### Validation Results
-
-| Metric | Score |
-|---------|-------|
-| Validation Loss | **Replace with your score** |
-| Accuracy | **Replace with your score** |
-| F1 Score | **Replace with your score** |
-| MAP@3 | **Replace with your score** |
+ **Best Validation Model:** ELECTRA-base
 
 ---
 
-# Model Comparison
+##  Error Analysis
 
-| Model | Validation Loss | Accuracy | F1 Score | MAP@3 |
-|------|----------------:|---------:|---------:|------:|
-| **BiGRU + Attention Scratch Model** | **0.0529** | **0.9745** | **0.9330** | **0.9963** |
-| TF-IDF + Logistic Regression | 0.4617 | 0.9365 | 0.8581 | 0.9692 |
-| ELECTRA-base Multiple Choice Transformer | **Replace** | **Replace** | **Replace** | **Replace** |
-
-The model with the highest **Validation MAP@3** is automatically selected for generating the final competition predictions.
+The notebook includes:
+- Classification Report
+- Confusion Matrix
+- Validation Performance Analysis
+- Model Comparison
 
 ---
 
-# Training
+##  Final Output
 
-All three models are trained independently.
-
-Evaluation metrics include:
-
-- Validation Loss
-- Validation Accuracy
-- Validation F1 Score
-- Validation MAP@3
-
-Additional features include:
-
-- Weights & Biases (W&B) experiment tracking
-- Automatic best model checkpoint selection
-- Error Analysis
-- Model Saving
-
----
-
-# Final Prediction Pipeline
-
-1. Retrain the best-performing model using the complete training dataset.
-2. Generate confidence scores for all five answer choices.
-3. Rank answer options by confidence.
-4. Select the top three predictions.
-5. Save predictions as:
+The best-performing ELECTRA model is used to generate the final Kaggle submission file:
 
 ```text
-submission.csv
+submission_electra_mc.csv
 ```
-
-Example:
-
-| ID | Prediction |
-|----|------------|
-| 1 | A E C |
-| 2 | B E A |
 
 ---
 
-# Technologies Used
+##  Technologies Used
 
 - Python
-- NumPy
-- Pandas
-- Scikit-learn
 - PyTorch
 - Hugging Face Transformers
+- Scikit-learn
+- NumPy
+- Pandas
 - Matplotlib
 - Seaborn
 - Graphviz
-- Joblib
 - Weights & Biases (W&B)
 
 ---
+##  Future Improvements
 
-# Installation
-
-```bash
-pip install -r requirements.txt
-```
-
-or
-
-```bash
-pip install numpy pandas matplotlib seaborn scikit-learn scipy tqdm torch torchvision transformers datasets accelerate sentencepiece wandb joblib graphviz
-```
+- Model Ensembling
+- K-Fold Cross Validation
+- Hyperparameter Optimization
+- Test-Time Augmentation (TTA)
+- Larger Transformer Models
 
 ---
 
-# Running the Notebook
+##  Author
 
-1. Download the Smart MCQ Solver Challenge dataset.
-2. Place the dataset inside the Kaggle input directory.
-3. Run all notebook cells.
-4. The notebook will:
+**Hariom Patel**
 
-- preprocess the data
-- perform exploratory data analysis
-- retrieve contextual information
-- train all three models
-- compare model performance
-- automatically select the best model
-- perform error analysis
-- save trained models
-- generate `submission.csv`
+IIT Madras BS Degree Program
 
 ---
 
-# Future Improvements
+##  Acknowledgements
 
-- Cross-validation
-- BM25 retrieval
-- Dense Retrieval
-- Sentence Transformer retrieval
-- Larger Transformer Models (RoBERTa-large, DeBERTa-v3)
-- Model ensembling
-- Knowledge distillation
-- Hard negative mining
-- Hyperparameter optimization
+- Kaggle
+- IIT Madras
+- Hugging Face
+- PyTorch
+- Weights & Biases
 
 ---
 
-# Author
-
-Developed as a solution for the **Smart MCQ Solver Challenge**, demonstrating classical machine learning, deep learning from scratch using **BiGRU with Attention**, retrieval-augmented learning, and transformer-based multiple-choice question answering using **ELECTRA-base**.
+ If you found this project helpful, consider giving it a **Star** on GitHub.
